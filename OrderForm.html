@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>scienceSeeds — Order Form</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #F05A2D;
+    --green:  #1E692D;
+    --lt-org: #FEF0EB;
+    --lt-grn: #EAF4EC;
+    --sand:   #F5EDE6;
+    --brown:  #5D3A1A;
+    --stripe: #FDF8F4;
+    --border: #E8D5C8;
+    --text:   #2A1A0E;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f9f4f0;
+    color: var(--text);
+    font-size: 13px;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--lt-org);
+    border-bottom: 2.5px solid var(--orange);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(240,90,45,0.10);
+  }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    line-height: 1;
+    letter-spacing: -0.5px;
+  }
+  .logo span.science { color: var(--orange); }
+  .logo span.S       { color: var(--green);  }
+  .logo span.eeds    { color: var(--orange); }
+  .logo-sub {
+    font-size: 10px;
+    color: var(--brown);
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .order-total-badge {
+    background: var(--green);
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 7px 18px;
+    border-radius: 6px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+  }
+  .btn-send {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    padding: 9px 22px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+    box-shadow: 0 2px 10px rgba(240,90,45,0.22);
+    white-space: nowrap;
+  }
+  .btn-send:hover { background: #d94d22; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(240,90,45,0.32); }
+  .btn-send:active { transform: translateY(0); }
+  .btn-send svg { flex-shrink: 0; }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 1280px; margin: 0 auto; padding: 28px 24px 60px; }
+
+  /* ── CUSTOMER INFO ── */
+  .customer-card {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px 20px;
+  }
+  .customer-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+    color: var(--orange);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    grid-column: 1 / -1;
+    padding-bottom: 8px;
+    border-bottom: 1.5px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field.wide { grid-column: span 2; }
+  .field label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--brown);
+  }
+  .field input {
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    padding: 7px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--stripe);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    width: 100%;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(240,90,45,0.12);
+    background: #fff;
+  }
+
+  /* ── PRODUCT TABLE ── */
+  .table-wrap {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .col-left, .col-right { overflow: hidden; }
+  .col-right { border-left: 2px solid var(--orange); }
+
+  .col-header {
+    display: grid;
+    grid-template-columns: 110px 1fr 52px 70px 72px;
+    background: var(--orange);
+    padding: 8px 10px;
+    gap: 6px;
+  }
+  .col-header span {
+    font-size: 10px;
+    font-weight: 600;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .col-header span.right { text-align: right; }
+
+  /* Section rows */
+  .row-big {
+    background: var(--lt-org);
+    padding: 6px 10px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 12px;
+    color: var(--orange);
+    letter-spacing: 0.4px;
+    border-top: 1.5px solid var(--border);
+  }
+  .row-sub {
+    background: var(--lt-grn);
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Product rows */
+  .row-product {
+    display: grid;
+    grid-template-columns: 110px 1fr 52px 70px 72px;
+    align-items: center;
+    padding: 0 10px;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+    min-height: 30px;
+    transition: background 0.1s;
+  }
+  .row-product:nth-child(even) { background: var(--stripe); }
+  .row-product:nth-child(odd)  { background: #fff; }
+  .row-product:hover { background: #fff8f5; }
+
+  .row-product .sku  { font-size: 10px; color: var(--brown); font-weight: 500; }
+  .row-product .name { font-size: 11.5px; color: var(--text); line-height: 1.3; padding: 4px 0; }
+  .row-product .price { font-size: 11px; color: var(--brown); text-align: right; }
+
+  .row-product input.qty {
+    width: 100%;
+    text-align: center;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    background: var(--lt-grn);
+    color: var(--green);
+    font-weight: 600;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .row-product input.qty:focus {
+    outline: none;
+    border-color: var(--green);
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(30,105,45,0.12);
+  }
+  .row-product input.qty[value="0"] { color: #bbb; }
+
+  .row-product .total {
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+    color: var(--green);
+  }
+  .row-product .total.zero { color: #ccc; }
+
+  /* ── TOTALS BAR ── */
+  .totals-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 2px solid var(--orange);
+  }
+  .sub-total {
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--lt-org);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--brown);
+  }
+  .sub-total:last-child { border-left: 2px solid var(--orange); }
+  .sub-total .val { color: var(--orange); font-size: 14px; }
+
+  .order-total-row {
+    background: var(--green);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 20px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    border-radius: 0 0 8px 8px;
+  }
+
+  /* ── TERMS ── */
+  .terms-card {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .terms-header {
+    background: var(--orange);
+    color: #fff;
+    padding: 9px 18px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+    letter-spacing: 0.4px;
+  }
+  .terms-grid { display: grid; }
+  .terms-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .terms-row:nth-child(odd)  { background: var(--lt-org); }
+  .terms-row:nth-child(even) { background: #fff; }
+  .terms-row:last-child { border-bottom: none; }
+  .terms-label {
+    padding: 9px 14px;
+    font-weight: 600;
+    color: var(--orange);
+    border-right: 1px solid var(--border);
+  }
+  .terms-val { padding: 9px 14px; color: var(--text); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(42,26,14,0.55);
+    backdrop-filter: blur(3px);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: #fff;
+    border-radius: 12px;
+    width: 560px;
+    max-width: 95vw;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    transform: translateY(20px);
+    transition: transform 0.22s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header {
+    background: var(--orange);
+    color: #fff;
+    padding: 18px 24px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 12px 12px 0 0;
+  }
+  .modal-close {
+    background: none; border: none; color: #fff; font-size: 22px;
+    cursor: pointer; line-height: 1; opacity: 0.8;
+  }
+  .modal-close:hover { opacity: 1; }
+  .modal-body { padding: 22px 24px; }
+
+  .summary-customer {
+    background: var(--sand);
+    border-radius: 7px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 16px;
+  }
+  .summary-customer .sc-row { display: flex; gap: 6px; }
+  .summary-customer .sc-lbl { color: var(--brown); font-weight: 600; }
+  .summary-customer .sc-val { color: var(--text); }
+
+  .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 12px; }
+  .summary-table th {
+    background: var(--orange); color: #fff;
+    padding: 7px 10px; text-align: left; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .summary-table th.right { text-align: right; }
+  .summary-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
+  .summary-table td.right { text-align: right; }
+  .summary-table tr:nth-child(even) td { background: var(--stripe); }
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table .total-row td {
+    background: var(--green); color: #fff; font-weight: 700;
+    font-size: 13px; border-bottom: none;
+  }
+
+  .modal-actions {
+    display: flex; gap: 10px; margin-top: 6px;
+    padding-top: 16px;
+    border-top: 1.5px solid var(--border);
+  }
+  .btn-primary {
+    flex: 1; background: var(--orange); color: #fff; border: none;
+    padding: 11px 18px; border-radius: 6px; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-primary:hover { background: #d94d22; }
+  .btn-secondary {
+    flex: 1; background: var(--green); color: #fff; border: none;
+    padding: 11px 18px; border-radius: 6px; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-secondary:hover { background: #165523; }
+  .btn-ghost {
+    background: none; border: 1.5px solid var(--border); color: var(--brown);
+    padding: 11px 18px; border-radius: 6px; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer; transition: border-color 0.15s;
+  }
+  .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+
+  .empty-note {
+    text-align: center; color: var(--brown); padding: 24px;
+    font-size: 13px; font-style: italic;
+  }
+
+  /* print tweaks */
+  @media print {
+    .site-header, .modal-overlay { display: none !important; }
+    .page { padding: 0; }
+  }
+
+  @media (max-width: 820px) {
+    .product-grid { grid-template-columns: 1fr; }
+    .col-right { border-left: none; border-top: 2px solid var(--orange); }
+    .customer-card { grid-template-columns: 1fr 1fr; }
+    .field.wide { grid-column: span 2; }
+    .totals-bar { grid-template-columns: 1fr; }
+    .sub-total:last-child { border-left: none; border-top: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<header class="site-header">
+  <div>
+    <div class="logo">
+      <span class="science">science</span><span class="S">S</span><span class="eeds">eeds</span>
+    </div>
+    <div class="logo-sub">www.scienceseeds.com &nbsp;·&nbsp; orders@scienceseeds.com</div>
+  </div>
+  <div class="header-right">
+    <div class="order-total-badge">Total: <span id="header-total">$0.00</span></div>
+    <button class="btn-send" onclick="openModal()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      Send Order
+    </button>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- CUSTOMER INFO -->
+  <div class="customer-card">
+    <h2>Customer Information</h2>
+    <div class="field">
+      <label>Customer Name</label>
+      <input type="text" id="f-name" placeholder="Full name" oninput="updateTotals()">
+    </div>
+    <div class="field">
+      <label>PO #</label>
+      <input type="text" id="f-po" placeholder="Purchase order number">
+    </div>
+    <div class="field">
+      <label>Date</label>
+      <input type="date" id="f-date">
+    </div>
+    <div class="field wide">
+      <label>Address</label>
+      <input type="text" id="f-address" placeholder="Street address">
+    </div>
+    <div class="field">
+      <label>City / State / Zip</label>
+      <input type="text" id="f-city" placeholder="City, State ZIP">
+    </div>
+    <div class="field">
+      <label>Ship To (if different)</label>
+      <input type="text" id="f-shipto" placeholder="Shipping address">
+    </div>
+    <div class="field">
+      <label>Customer Email</label>
+      <input type="email" id="f-email" placeholder="customer@email.com" oninput="updateTotals()">
+    </div>
+    <div class="field">
+      <label>Phone</label>
+      <input type="tel" id="f-phone" placeholder="Phone number">
+    </div>
+  </div>
+
+  <!-- PRODUCT TABLE -->
+  <div class="table-wrap">
+    <div class="product-grid">
+      <div class="col-left" id="col-left"></div>
+      <div class="col-right" id="col-right"></div>
+    </div>
+    <div class="totals-bar">
+      <div class="sub-total">
+        <span>Left Column Total</span>
+        <span class="val" id="left-total">$0.00</span>
+      </div>
+      <div class="sub-total">
+        <span>Right Column Total</span>
+        <span class="val" id="right-total">$0.00</span>
+      </div>
+    </div>
+    <div class="order-total-row">
+      <span>ORDER TOTAL</span>
+      <span id="order-total-big">$0.00</span>
+    </div>
+  </div>
+
+  <!-- TERMS -->
+  <div class="terms-card">
+    <div class="terms-header">Terms &amp; Conditions</div>
+    <div class="terms-grid">
+      <div class="terms-row"><div class="terms-label">Shipping</div><div class="terms-val">Shipping is paid by the Retailer for orders under $1,000.00.</div></div>
+      <div class="terms-row"><div class="terms-label">Special Orders</div><div class="terms-val">A 50% deposit is required upfront for all special orders.</div></div>
+      <div class="terms-row"><div class="terms-label">Opening Order Min.</div><div class="terms-val">Opening Order Minimum: $250</div></div>
+      <div class="terms-row"><div class="terms-label">Reorder Minimum</div><div class="terms-val">Reorder Minimum: $100</div></div>
+      <div class="terms-row"><div class="terms-label">Category Minimums</div><div class="terms-val">Minimum quantities per category may include any combination of styles.</div></div>
+      <div class="terms-row"><div class="terms-label">Custom Orders</div><div class="terms-val">Custom engraving and custom orders are available. Small quantities available depending on the project.</div></div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- SEND ORDER MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      Order Summary
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ── PRODUCT DATA ──────────────────────────────────────────────────────────────
+const LEFT = [{"type":"big","val":"HOLIDAY ITEMS"},{"type":"sub","val":"Platform Ornaments"},{"type":"product","val":["SHOLPL001","Christmas Tree & Presents Ornament",10]},{"type":"product","val":["SHOLPL002","ILVNY Ornament",10]},{"type":"product","val":["SHOLPL003","Penguin and Snowman Ornament",10]},{"type":"product","val":["SHOLPL004","NYC Landmarks Ornament",10]},{"type":"product","val":["SHOLPL005","Santa and Sleigh Ornament",10]},{"type":"product","val":["SHOLPL006","Santa and Rocket Ornament",10]},{"type":"product","val":["SHOLPL007","Dog and Tree Ornament",10]},{"type":"product","val":["SHOLPL008","Cat and Tree Ornament",10]},{"type":"product","val":["SHOLPL009","Einstein",10]},{"type":"product","val":["SHOLPL010","Princeton - Nassau Hall",10]},{"type":"product","val":["SHOLPL011","Princeton - Woodrow Wilson",10]},{"type":"sub","val":"Layered Ornaments"},{"type":"product","val":["SHOLLA001","Reversible Santa & Sleigh Ornament",12.5]},{"type":"product","val":["SHOLLA002","Reversible NYC Skyline Ornament",12.5]},{"type":"product","val":["SHOLLA003","Reversible Snowman Ornament",12.5]},{"type":"product","val":["SHOLLA004","Reversible I Love NY & Big Apple Orn.",12.5]},{"type":"product","val":["SHOLLA005","Reversible Reindeer and Trees Ornament",12.5]},{"type":"product","val":["SHOLLA008","Reversible NYC Skyline 2026 Ornament",12.5]},{"type":"product","val":["SHOLLA009","Reversible NYC Skyline 2027 Ornament",12.5]},{"type":"sub","val":"Holiday Trees"},{"type":"product","val":["SHOLTR00S","Snowflake Xmas Tree - Small",12.5]},{"type":"product","val":["SHOLTR00M","Snowflake Xmas Tree - Medium",17.5]},{"type":"product","val":["SHOLTR00L","Snowflake Xmas Tree - Large",24]},{"type":"product","val":["SHOLTRCRC","Ring Xmas Tree - Circular",12.5]},{"type":"product","val":["SHOLTRSTR","Ring Xmas Tree - Star",12.5]},{"type":"product","val":["SHOLTRWAV","Ring Xmas Tree - Wavy",12.5]},{"type":"product","val":["SHOLTRORN","Mini Ornaments",5]},{"type":"sub","val":"Hanukkah"},{"type":"product","val":["SHOLDR001","Dreidel (N,G,H,S)",10]},{"type":"product","val":["SHOLME001","Menorah - Hebrew Lettering",17.5]},{"type":"product","val":["SHOLME002","Menorah - English Lettering",17.5]},{"type":"big","val":"GADGETRY"},{"type":"sub","val":"Automata"},{"type":"product","val":["SAUTBL001","Ballerina",20]},{"type":"product","val":["SAUTDI001","Dinosaur",20]},{"type":"product","val":["SAUTWH001","Whale",20]},{"type":"product","val":["SAUTBI001","Bird",20]},{"type":"big","val":"GAMES"},{"type":"product","val":["SGAMMA001","Marble Maze",20]},{"type":"product","val":["SGAMJS002","Jumping Sprites",20]},{"type":"big","val":"CRAFTY KITS"},{"type":"sub","val":"String Art"},{"type":"product","val":["SCRKSA001","5 Elliptical Hoops",12.5]},{"type":"product","val":["SCRKSA002","3 Circular Hoops",20]},{"type":"product","val":["SCRKSA003","5 Circular Hoops",20]},{"type":"sub","val":"Bookmark Loom"},{"type":"product","val":["SCRKBL001","Animals",12.5]},{"type":"product","val":["SCRKBL002","Space",12.5]},{"type":"product","val":["SCRKBL003","NY Symbols",12.5]},{"type":"product","val":["SCRKBL004","Holidays",12.5]},{"type":"sub","val":"Vehicles"},{"type":"product","val":["SVEHDT001","Dump Truck",20]},{"type":"product","val":["SVEHGT001","Garbage Truck",17.5]},{"type":"product","val":["SVEHSEB001","School Bus + Engrave",20]},{"type":"big","val":"BALLISTICS"},{"type":"sub","val":"Catapult"},{"type":"product","val":["SBALCP001","Catapult No 1",17.5]},{"type":"product","val":["SBALCP002","Catapult No 1A",17.5]},{"type":"product","val":["SBALCP003","Catapult No 2",22.5]},{"type":"product","val":["SBALDA001","DaVinci Catapult",25]},{"type":"product","val":["SBALBL001","Ballista",20]},{"type":"product","val":["SBALDL001","Disc Launcher",15]},{"type":"sub","val":"Targets"},{"type":"product","val":["STARTG001","Target - Plain","TBD"]},{"type":"product","val":["STARTG002","Target - Bulls' Eye",10]},{"type":"product","val":["STARTG003","Target - Emoji",10]},{"type":"sub","val":"Balls"},{"type":"product","val":["SBALBA001","Extra Balls - Set of 2 Balls",2]},{"type":"product","val":["SBALBA002","Extra Balls - Set of 4 Balls",4]}];
+
+const RIGHT = [{"type":"big","val":"PUZZLES"},{"type":"sub","val":"Cube Puzzle"},{"type":"product","val":["SPUZCL001","Cube Puzzle Rookie",7.5]},{"type":"product","val":["SPUZCL002","Cube Puzzle Challenger",7.5]},{"type":"product","val":["SPUZCL003","Cube Puzzle Pro",7.5]},{"type":"product","val":["SPUZCL004","Cube Puzzle Master",7.5]},{"type":"sub","val":"Rotating Octagon"},{"type":"product","val":["SPUZRO003","Science Symbols",20]},{"type":"product","val":["SPUZRO004","Space Symbols",20]},{"type":"product","val":["SPUZRO007","NYC Symbols",20]},{"type":"sub","val":"Hexagon Puzzle"},{"type":"product","val":["SPUZHX001","Hanukkah Symbols",17.5]},{"type":"product","val":["SPUZHX002","Harry Potter Symbols",17.5]},{"type":"product","val":["SPUZHX003","Numbers",17.5]},{"type":"product","val":["SPUZHX004","NYC",17.5]},{"type":"sub","val":"Math Puzzles"},{"type":"product","val":["SMTHMG001","Magic Cards - Binary Math Puzzle","TBD"]},{"type":"sub","val":"Tabletop Puzzles"},{"type":"product","val":["SPUZBRCAL","Calendar Puzzle-A-Day",16]},{"type":"product","val":["SUZBRMOU","Mountain Puzzle",12.5]},{"type":"product","val":["SPUZBRDIG","Digits Puzzle",12.5]},{"type":"product","val":["SPUZBRMEN","Martin's Menace Puzzle",10]},{"type":"product","val":["SPUZBRCAT","Cats and More Cats Puzzle",15]},{"type":"product","val":["SPUZBRCTF","Cats Stacking Puzzle",12]},{"type":"product","val":["SPUZBRBEE","Bee's Puzzle",12]},{"type":"product","val":["SPUZBR4FS","4Fs Puzzle",19.5]},{"type":"product","val":["SPUZBRNMT","Number Match Puzzle",10]},{"type":"product","val":["SPUZBRCEL","Celtic Knot Puzzle",10]},{"type":"sub","val":"Magic Penny Box"},{"type":"product","val":["SPUZPB001","Lattice",17.5]},{"type":"product","val":["SPUZPB002","Lattice Assembled",18]},{"type":"big","val":"TOPS"},{"type":"sub","val":"Circular Tops"},{"type":"product","val":["STOPCR001","Crescent Moon Spiral",10]},{"type":"product","val":["STOPCR002","Hypnotic Spiral","TBD"]},{"type":"product","val":["STOPCR003","Interlaced Triangle",10]},{"type":"product","val":["STOPCR004","Geometric Blocks",10]},{"type":"product","val":["STOPCR005","Geometric Star",10]},{"type":"product","val":["STOPCR006","Crossing Tiles",10]},{"type":"product","val":["STOPCR007","Concentric Circles",10]},{"type":"product","val":["STOPCR008","Star",10]},{"type":"product","val":["STOPCR009","Circle of Stars",10]},{"type":"product","val":["STOPCR010","Swirl Spiral",10]},{"type":"sub","val":"Planetary Tops"},{"type":"product","val":["STOPPL001","Sun Spinning Top",10]},{"type":"product","val":["STOPPL002","Earth Spinning Top",10]},{"type":"product","val":["STOPPL003","Rainbow Spinning Top",10]},{"type":"product","val":["STOPPL004","Saturn Spinning Top",10]},{"type":"product","val":["STOPPL005","Asteroid Spinning Top",10]},{"type":"sub","val":"Flower Tops"},{"type":"product","val":["STOPFL001","Lily Flower Top",10]},{"type":"product","val":["STOPFL002","Dahlia Flower Top",10]},{"type":"product","val":["STOPFL003","Daisy Flower Top",10]},{"type":"product","val":["STOPFL004","Hibiscus Flower Top",10]},{"type":"product","val":["STOPFL005","Aster Flower Top",10]},{"type":"sub","val":"HexaStar Tops"},{"type":"product","val":["STOPHS001","Star of David - Traditional",10]},{"type":"product","val":["STOPHS002","Double Star",10]},{"type":"product","val":["STOPHS003","Star Mosaic",10]},{"type":"product","val":["STOPHS004","Star & Tiles I",10]},{"type":"product","val":["STOPHS005","Star & Tiles II (cut outs)",10]},{"type":"sub","val":"Number Tops"},{"type":"product","val":["STOPDT001","Numbers and Spiral",10]},{"type":"product","val":["STOPDT002","Numbers with Frame Around Hexagon",10]},{"type":"product","val":["STOPDT003","Numbers in Hexagon",10]},{"type":"sub","val":"Sharingan Tops"},{"type":"product","val":["STOPSH001","Madara",10]},{"type":"product","val":["STOPSH002","Triple Swirl / Sasuke VS1",10]},{"type":"product","val":["STOPSH003","Sasuke VS2",10]},{"type":"sub","val":"Toothpick Tops"},{"type":"product","val":["STOPTT001","Swirl and Crescent",5]},{"type":"product","val":["STOPTT002","Triangle Mosaic",5]},{"type":"product","val":["STOPTT003","Diamond Mosaic",5]},{"type":"product","val":["STOPTT004","Bubbles",5]},{"type":"product","val":["STOPTT005","Steampunk Gear",5]}];
+
+const qty = {}; // sku -> qty value
+
+function fmt(n) { return '$' + Number(n).toFixed(2); }
+
+function buildColumn(items, containerId) {
+  const el = document.getElementById(containerId);
+  // Header
+  const hdr = document.createElement('div');
+  hdr.className = 'col-header';
+  hdr.innerHTML = '<span>SKU</span><span>Product Name</span><span style="text-align:center">Qty</span><span class="right">Price</span><span class="right">Total</span>';
+  el.appendChild(hdr);
+
+  let rowIndex = 0;
+  items.forEach(item => {
+    if (item.type === 'big') {
+      const r = document.createElement('div');
+      r.className = 'row-big';
+      r.textContent = item.val;
+      el.appendChild(r);
+    } else if (item.type === 'sub') {
+      const r = document.createElement('div');
+      r.className = 'row-sub';
+      r.textContent = item.val;
+      el.appendChild(r);
+    } else {
+      const [sku, name, price] = item.val;
+      const isNumericPrice = typeof price === 'number';
+      qty[sku] = 0;
+
+      const r = document.createElement('div');
+      r.className = 'row-product';
+      r.style.background = rowIndex % 2 === 0 ? '#fff' : 'var(--stripe)';
+
+      const skuEl   = document.createElement('div'); skuEl.className = 'sku'; skuEl.textContent = sku;
+      const nameEl  = document.createElement('div'); nameEl.className = 'name'; nameEl.textContent = name;
+
+      const qtyInput = document.createElement('input');
+      qtyInput.type = 'number'; qtyInput.className = 'qty';
+      qtyInput.min = '0'; qtyInput.step = '1'; qtyInput.value = '';
+      qtyInput.placeholder = '0';
+      qtyInput.dataset.sku = sku;
+      qtyInput.dataset.price = isNumericPrice ? price : 0;
+      qtyInput.addEventListener('input', () => {
+        qty[sku] = parseInt(qtyInput.value) || 0;
+        const tot = isNumericPrice ? qty[sku] * price : 0;
+        totalEl.textContent = (qty[sku] > 0 && isNumericPrice) ? fmt(tot) : '—';
+        totalEl.className = 'total' + (qty[sku] > 0 && isNumericPrice ? '' : ' zero');
+        updateTotals();
+      });
+
+      const priceEl = document.createElement('div');
+      priceEl.className = 'price';
+      priceEl.textContent = isNumericPrice ? fmt(price) : 'TBD';
+
+      const totalEl = document.createElement('div');
+      totalEl.className = 'total zero'; totalEl.textContent = '—';
+
+      r.append(skuEl, nameEl, qtyInput, priceEl, totalEl);
+      el.appendChild(r);
+      rowIndex++;
+    }
+  });
+}
+
+function getOrderedItems() {
+  const all = [...LEFT, ...RIGHT];
+  const result = [];
+  all.forEach(item => {
+    if (item.type !== 'product') return;
+    const [sku, name, price] = item.val;
+    const q = qty[sku] || 0;
+    if (q > 0 && typeof price === 'number') {
+      result.push({ sku, name, qty: q, price, total: q * price });
+    }
+  });
+  return result;
+}
+
+function colTotal(items) {
+  let t = 0;
+  items.forEach(item => {
+    if (item.type !== 'product') return;
+    const [sku,, price] = item.val;
+    const q = qty[sku] || 0;
+    if (q > 0 && typeof price === 'number') t += q * price;
+  });
+  return t;
+}
+
+function updateTotals() {
+  const lt = colTotal(LEFT);
+  const rt = colTotal(RIGHT);
+  const ot = lt + rt;
+  document.getElementById('left-total').textContent  = fmt(lt);
+  document.getElementById('right-total').textContent = fmt(rt);
+  document.getElementById('order-total-big').textContent = fmt(ot);
+  document.getElementById('header-total').textContent = fmt(ot);
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function openModal() {
+  const items = getOrderedItems();
+  const name    = document.getElementById('f-name').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const po      = document.getElementById('f-po').value.trim();
+  const date    = document.getElementById('f-date').value;
+  const address = document.getElementById('f-address').value.trim();
+  const city    = document.getElementById('f-city').value.trim();
+  const shipto  = document.getElementById('f-shipto').value.trim();
+  const phone   = document.getElementById('f-phone').value.trim();
+  const total   = items.reduce((s, i) => s + i.total, 0);
+
+  const fmtDate = date ? new Date(date + 'T12:00:00').toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'}) : '';
+
+  let html = `
+    <div class="summary-customer">
+      ${name    ? `<div class="sc-row"><span class="sc-lbl">Customer:</span><span class="sc-val">${esc(name)}</span></div>` : ''}
+      ${po      ? `<div class="sc-row"><span class="sc-lbl">PO #:</span><span class="sc-val">${esc(po)}</span></div>` : ''}
+      ${email   ? `<div class="sc-row"><span class="sc-lbl">Email:</span><span class="sc-val">${esc(email)}</span></div>` : ''}
+      ${fmtDate ? `<div class="sc-row"><span class="sc-lbl">Date:</span><span class="sc-val">${fmtDate}</span></div>` : ''}
+      ${address ? `<div class="sc-row"><span class="sc-lbl">Address:</span><span class="sc-val">${esc(address)}${city ? ', ' + esc(city) : ''}</span></div>` : ''}
+      ${shipto  ? `<div class="sc-row"><span class="sc-lbl">Ship To:</span><span class="sc-val">${esc(shipto)}</span></div>` : ''}
+      ${phone   ? `<div class="sc-row"><span class="sc-lbl">Phone:</span><span class="sc-val">${esc(phone)}</span></div>` : ''}
+    </div>`;
+
+  if (items.length === 0) {
+    html += `<div class="empty-note">No items have been ordered yet. Enter quantities above.</div>`;
+  } else {
+    html += `<table class="summary-table">
+      <thead><tr>
+        <th>SKU</th><th>Product</th>
+        <th class="right">Qty</th><th class="right">Unit Price</th><th class="right">Total</th>
+      </tr></thead><tbody>`;
+    items.forEach(i => {
+      html += `<tr>
+        <td style="font-size:10px;color:var(--brown)">${esc(i.sku)}</td>
+        <td>${esc(i.name)}</td>
+        <td class="right">${i.qty}</td>
+        <td class="right">${fmt(i.price)}</td>
+        <td class="right" style="font-weight:600">${fmt(i.total)}</td>
+      </tr>`;
+    });
+    html += `<tr class="total-row">
+      <td colspan="4" style="text-align:right;padding-right:12px">ORDER TOTAL</td>
+      <td class="right">${fmt(total)}</td>
+    </tr></tbody></table>`;
+  }
+
+  html += `<div class="modal-actions">
+    <button class="btn-primary" onclick="sendEmail()" ${!email ? 'disabled style="opacity:.5;cursor:not-allowed"' : ''}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      ${email ? 'Open Email to ' + esc(email) : 'Add email to send'}
+    </button>
+    <button class="btn-secondary" onclick="printSummary()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print / Save PDF
+    </button>
+    <button class="btn-ghost" onclick="closeModal()">Close</button>
+  </div>
+  ${!email ? '<p style="font-size:11px;color:var(--brown);margin-top:8px;text-align:center">Enter the customer email above to enable email sending.</p>' : ''}`;
+
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal').classList.add('open');
+}
+
+function sendEmail() {
+  const items  = getOrderedItems();
+  const name   = document.getElementById('f-name').value.trim();
+  const email  = document.getElementById('f-email').value.trim();
+  const po     = document.getElementById('f-po').value.trim();
+  const date   = document.getElementById('f-date').value;
+  const total  = items.reduce((s, i) => s + i.total, 0);
+  const fmtDate = date ? new Date(date + 'T12:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : '';
+
+  if (!email) return;
+
+  let subject = 'scienceSeeds Order Summary';
+  if (name) subject += ' — ' + name;
+  if (po)   subject += ' (PO# ' + po + ')';
+
+  let body = `Dear ${name || 'Customer'},\n\nPlease find below your order summary from scienceSeeds.\n\n`;
+  if (fmtDate) body += `Date: ${fmtDate}\n`;
+  if (po)      body += `PO #: ${po}\n`;
+  body += '\n';
+
+  if (items.length > 0) {
+    body += 'ORDER ITEMS\n' + '─'.repeat(50) + '\n';
+    const skuW  = Math.max(...items.map(i => i.sku.length),  3);
+    const nameW = Math.max(...items.map(i => i.name.length), 7);
+    items.forEach(i => {
+      body += `${i.sku.padEnd(skuW)}  ${i.name.padEnd(Math.min(nameW,36))}  Qty: ${String(i.qty).padStart(3)}  ${fmt(i.price).padStart(7)}  ${fmt(i.total).padStart(8)}\n`;
+    });
+    body += '─'.repeat(50) + '\n';
+    body += `${'ORDER TOTAL'.padEnd(skuW + Math.min(nameW,36) + 20)}  ${fmt(total).padStart(8)}\n`;
+  } else {
+    body += '(No items ordered)\n';
+  }
+
+  body += '\n\nTERMS & CONDITIONS\n';
+  body += '• Shipping paid by Retailer for orders under $1,000.00\n';
+  body += '• Special Orders: 50% deposit required upfront\n';
+  body += '• Opening Order Minimum: $250 | Reorder Minimum: $100\n';
+  body += '• Category minimums may include any combination of styles\n';
+  body += '• Custom engraving available — contact us for details\n';
+
+  body += '\n\nThank you for your order!\n\nscienceSeeds\nwww.scienceseeds.com\norders@scienceseeds.com';
+
+  const mailto = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+}
+
+function printSummary() {
+  window.print();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── SET DEFAULT DATE ──────────────────────────────────────────────────────────
+document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildColumn(LEFT, 'col-left');
+buildColumn(RIGHT, 'col-right');
+updateTotals();
+</script>
+</body>
+</html>
